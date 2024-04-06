@@ -2,7 +2,7 @@
 
 
 ## How to use
-open cmd 
+Open cmd, cd to your directory and folow : 
 
 ```
 git clone https://github.com/Trgtuan10/Uniqlo-price-prediction.git
@@ -10,7 +10,7 @@ git clone https://github.com/Trgtuan10/Uniqlo-price-prediction.git
 
 cd Uniqlo-price-prediction
 
-python -m vevn .env
+python -m venv .env
 
 .env\Scripts\activate
 
