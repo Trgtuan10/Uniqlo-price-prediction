@@ -5,3 +5,5 @@ requests
 pillow
 ultralytics
 opencv-python
+scikit-image
+numpy
