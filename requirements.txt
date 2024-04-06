@@ -3,3 +3,5 @@ matplotlib
 torch
 requests
 pillow
+ultralytics
+opencv-python
