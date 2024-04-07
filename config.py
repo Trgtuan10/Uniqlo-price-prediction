@@ -23,7 +23,7 @@ def argument_parser():
     parser.add_argument('--weight_decay', type=float, default=5e-4)
     parser.add_argument("--train_split", type=str, default="train", choices=['train', 'trainval'])
     parser.add_argument("--valid_split", type=str, default="test", choices=['test', 'valid'])
-    parser.add_argument('--device', default="1", type=str, help='gpu device ids for CUDA_VISIBLE_DEVICES')
+    parser.add_argument('--device', default="0", type=str, help='gpu device ids for CUDA_VISIBLE_DEVICES')
     parser.add_argument("--redirector", action='store_false')
     parser.add_argument('--use_bn', action='store_false')
     parser.add_argument('--use_pretrain', default=False, type=bool)
@@ -67,7 +67,7 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer):
     for step, (imgs, gt_label, imgname) in enumerate(train_loader):
         
         batch_time = time.time()
-        imgs, gt_label = imgs.cuda(), gt_label.cuda()
+        #imgs, gt_label = imgs.cuda(), gt_label.cuda()
         train_predict = model(imgs)
         train_loss = criterion(train_predict, gt_label)
 
@@ -77,7 +77,7 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer):
         optimizer.zero_grad()
 
         loss_meter.update(train_loss)
-    
+
 
         log_interval = 20
         if (step + 1) % log_interval == 0 or (step + 1) % len(train_loader) == 0:

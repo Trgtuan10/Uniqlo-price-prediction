@@ -21,7 +21,7 @@ def main(args):
                         root_dir='datasets/images', 
                         transform=train_tsfm)
     #Them csv valid vao day
-    valid_set = UniqloDataset(csv_file='datasets/image_data.csv', 
+    valid_set = UniqloDataset(csv_file='datasets/image_valid.csv', 
                         root_dir='datasets/images', 
                         transform=valid_tsfm)
     
@@ -43,8 +43,8 @@ def main(args):
     backbone = resnet18()
     model = Uniqlo(backbone)
 
-    if torch.cuda.is_available():
-        model = torch.nn.DataParallel(model).cuda()
+    device = torch.device("cuda:" + args.device if torch.cuda.is_available() else "cpu")
+    model.to(device)
     if args.use_pretrain==True:
         model_path = args.pretrain_model  # luu dia chi cua model
         checkpoint = torch.load(model_path)
