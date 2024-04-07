@@ -85,8 +85,6 @@ def main(args):
             print("Replacing last checkpoint with the new one.")
 
 
-
-
 def save_checkpoint(model, optimizer, epoch, filepath):
     checkpoint = {
         'epoch': epoch,

@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-#from skimage.io import imread
+from skimage.io import imread
 import torchvision.transforms as T
 
 class UniqloDataset(Dataset):
