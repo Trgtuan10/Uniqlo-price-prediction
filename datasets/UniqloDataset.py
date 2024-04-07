@@ -2,8 +2,8 @@ import os
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-from skimage.io import imread
 import torchvision.transforms as T
+from PIL import Image
 
 class UniqloDataset(Dataset):
     def __init__(self, csv_file, root_dir, transform=None):
@@ -16,7 +16,7 @@ class UniqloDataset(Dataset):
     
     def __getitem__(self, index):
         img_path = self.annotations.iloc[index, 0]
-        image =    imread(img_path)
+        image = Image.open(img_path).convert('RGB')
         y_label = torch.tensor(int(self.annotations.iloc[index, 1]))
         
         if self.transform:

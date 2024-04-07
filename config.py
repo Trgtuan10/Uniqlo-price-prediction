@@ -64,11 +64,12 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer):
 
     lr0 = optimizer.param_groups[0]['lr']
     lr1 = optimizer.param_groups[1]['lr']
-    for step, (imgs, gt_label, imgname) in enumerate(train_loader):
-        
+    for step, (imgs, gt_label) in enumerate(train_loader):
+        gt_label = gt_label.unsqueeze(1)
         batch_time = time.time()
-        #imgs, gt_label = imgs.cuda(), gt_label.cuda()
+        imgs, gt_label = imgs.cuda(), gt_label.cuda()
         train_predict = model(imgs)
+        gt_label = gt_label.float()
         train_loss = criterion(train_predict, gt_label)
 
         train_loss.backward()
@@ -98,10 +99,12 @@ def valid_trainer(model, valid_loader, criterion):
     loss_meter = AverageMeter()
 
     with torch.no_grad():
-        for step, (imgs, gt_label, imgname) in enumerate(tqdm(valid_loader)):
+        for step, (imgs, gt_label) in enumerate(tqdm(valid_loader)):
             imgs = imgs.cuda()
+            gt_label = gt_label.unsqueeze(1)
             gt_label = gt_label.cuda()
             valid_predict = model(imgs)
+            valid_predict = valid_predict.float()
             valid_loss = criterion(valid_predict, gt_label)
             loss_meter.update(valid_loss)
 

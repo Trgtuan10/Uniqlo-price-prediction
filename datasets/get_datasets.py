@@ -9,7 +9,7 @@ csv_file = "UniqloFinal.csv"  # Replace with the path to your CSV file
 data = pd.read_csv(csv_file)
 
 # Step 2: Create a directory to store downloaded images
-image_dir = "datasets/imagesss"
+image_dir = "images"
 if not os.path.exists(image_dir):
     os.makedirs(image_dir)
 

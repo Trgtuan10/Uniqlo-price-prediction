@@ -18,11 +18,11 @@ def main(args):
     train_tsfm, valid_tsfm = get_transform(args)
 
     train_set = UniqloDataset(csv_file='datasets/image_data.csv', 
-                        root_dir='datasets/images', 
+                        root_dir='datasets/datasets/imagesss', 
                         transform=train_tsfm)
     #Them csv valid vao day
     valid_set = UniqloDataset(csv_file='datasets/image_valid.csv', 
-                        root_dir='datasets/images', 
+                        root_dir='datasets/datasets/imagesss', 
                         transform=valid_tsfm)
     
     train_loader = DataLoader(
@@ -38,7 +38,6 @@ def main(args):
         shuffle=False,
         num_workers=args.workers,
     )
-
     #model
     backbone = resnet18()
     model = Uniqlo(backbone)
@@ -77,10 +76,10 @@ def main(args):
             criterion=criterion,
         )
 
-        lr_scheduler.step(metrics=valid_loss)
+        lr_scheduler.step(metrics=valid_loss[0])
 
         # save checkpoint
-        if (i + 1) % 10 == 0:
+        if (i + 1) % 1 == 0:
             save_checkpoint(model, optimizer, i + 1, last_checkpoint_path)
             print("Replacing last checkpoint with the new one.")
 
@@ -97,8 +96,6 @@ def save_checkpoint(model, optimizer, epoch, filepath):
     else:
         torch.save(checkpoint, filepath + '.tmp') 
         os.replace(filepath + '.tmp', filepath)  
-
-
 
 if __name__ == '__main__':
     parser = argument_parser()
