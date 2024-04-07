@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "D:\OneDrive - Hanoi University of Science and Technology\My Git\Uniqlo-price-prediction\train_uniqlo.py", line 113, in <module>
-    main(args)
-  File "D:\OneDrive - Hanoi University of Science and Technology\My Git\Uniqlo-price-prediction\train_uniqlo.py", line 69, in main
-    wandb.log({"Train Loss": train_loss, "Validation Loss": valid_loss[0]})
-                             ^^^^^^^^^^
-UnboundLocalError: cannot access local variable 'train_loss' where it is not associated with a value
