@@ -46,8 +46,8 @@ def main(args):
     model.to(device)
     if args.use_pretrain==True:
         model_path = args.pretrain_model  # luu dia chi cua model
-        checkpoint = torch.load(model_path)
-        model.load_state_dict(checkpoint['state_dicts'])
+        checkpoint = torch.load(model_path, map_location=torch.device(device))
+        model.load_state_dict(checkpoint['state_dict'])
     
     # save checkpoint
     exp_dir = args.checkpoint
@@ -57,7 +57,7 @@ def main(args):
     criterion = nn.MSELoss()
     param_groups = [{'params': model.finetune_params(), 'lr': args.lr_ft},
                     {'params': model.fresh_params(), 'lr': args.lr_new}]
-    optimizer = torch.optim.SGD(param_groups, momentum=args.momentum, weight_decay=args.weight_decay, nesterov=False)
+    optimizer = torch.optim.Adam(param_groups, weight_decay=args.weight_decay)
     lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=4)
 
     #training
@@ -68,12 +68,14 @@ def main(args):
             train_loader=train_loader,
             criterion=criterion,
             optimizer=optimizer,
+            device=device,
         )
 
         valid_loss = valid_trainer(
             model=model,
             valid_loader=valid_loader,
             criterion=criterion,
+            device=device,
         )
 
         lr_scheduler.step(metrics=valid_loss[0])
