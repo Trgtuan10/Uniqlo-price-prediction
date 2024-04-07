@@ -27,11 +27,11 @@ Train new checkpoint
 ```
 cd Uniqlo-price-prediction
 
-python train_uniqlo.py --train_epoch 300 -- batchsize 8 --device 1 --height 256 --width 256
+python train_uniqlo.py --train_epoch 300 --batchsize 8 --device 0 --height 256 --width 256
 
 ```
 
 Train pretrain or resume
 ```
-python train_uniqlo.py --train_epoch 300 -- batchsize 8 --device 1 --height 256 --width 256 --use_pretrain True --pretrain_model 'path/to/your/checkpoint.pt'
+python train_uniqlo.py --train_epoch 300 --batchsize 8 --device 0 --height 256 --width 256 --use_pretrain True --pretrain_model 'path/to/your/checkpoint.pt'
 ```
