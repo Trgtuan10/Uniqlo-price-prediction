@@ -83,15 +83,13 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
                   f'train_loss:{loss_meter.val:.4f}')
 
 
-
-
     print(f'Epoch {epoch}, LR0 {lr0}, LR1 {lr1}, Train_Time {time.time() - epoch_time:.2f}s, Loss: {loss_meter.avg:.4f}')
 
     return train_loss
 
 
 # @torch.no_grad()
-def valid_trainer(model, valid_loader, criterion):
+def valid_trainer(model, valid_loader, criterion, device):
     model.eval()
     loss_meter = AverageMeter()
 
@@ -99,7 +97,7 @@ def valid_trainer(model, valid_loader, criterion):
         for step, (imgs, gt_label) in enumerate(tqdm(valid_loader)):
             imgs = imgs.cuda()
             gt_label = gt_label.unsqueeze(1)
-            gt_label = gt_label.cuda()
+            gt_label = gt_label.to(device)
             valid_predict = model(imgs)
             valid_predict = valid_predict.float()
             valid_loss = criterion(valid_predict, gt_label)

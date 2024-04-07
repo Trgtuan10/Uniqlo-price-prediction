@@ -11,6 +11,8 @@ import torchvision.transforms as T
 from resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
 from Uniqlo import *
 
+import wandb
+
 
 def main(args):
     print(f'use GPU{args.device} for training')
@@ -49,6 +51,9 @@ def main(args):
         checkpoint = torch.load(model_path, map_location=torch.device(device))
         model.load_state_dict(checkpoint['state_dict'])
     
+    # Initialize Weights & Biases
+    wandb.init(project="Uniqlo price prediction", config=args)
+    
     # save checkpoint
     exp_dir = args.checkpoint
     last_checkpoint_filename = 'last.pt'
@@ -59,6 +64,7 @@ def main(args):
                     {'params': model.fresh_params(), 'lr': args.lr_new}]
     optimizer = torch.optim.Adam(param_groups, weight_decay=args.weight_decay)
     lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=4)
+
 
     #training
     for i in range(args.train_epoch):
@@ -79,9 +85,16 @@ def main(args):
         )
 
         lr_scheduler.step(metrics=valid_loss[0])
+        
+        #log
+        wandb.log({
+        "Epoch": i + 1,
+        "Train Loss": train_loss,  # Assuming train_loss is already averaged over the epoch
+        "Validation Loss": valid_loss[0]  # Assuming valid_loss is a tuple with the first element being the average loss over the validation set
+        })
 
         # save checkpoint
-        if (i + 1) % 1 == 0:
+        if (i + 1) % 50 == 0:
             save_checkpoint(model, optimizer, i + 1, last_checkpoint_path)
             print("Replacing last checkpoint with the new one.")
 
