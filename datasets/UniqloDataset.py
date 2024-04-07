@@ -2,7 +2,8 @@ import os
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-from skimage.io import imread
+#from skimage.io import imread
+import torchvision.transforms as T
 
 class UniqloDataset(Dataset):
     def __init__(self, csv_file, root_dir, transform=None):
@@ -23,4 +24,22 @@ class UniqloDataset(Dataset):
             
         return (image, y_label)
     
+
+def get_transform(args):
+    height = args.height
+    width = args.width
+    train_transform = T.Compose([
+        T.Resize((height, width)),
+        T.Pad(10),
+        T.RandomCrop((height, width)),
+        T.RandomHorizontalFlip(),
+        T.ToTensor(),
+    ])
+
+    valid_transform = T.Compose([
+        T.Resize((height, width)),
+        T.ToTensor(),
+    ])
+
+    return train_transform, valid_transform
 
