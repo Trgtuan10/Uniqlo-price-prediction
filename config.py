@@ -94,15 +94,24 @@ def valid_trainer(model, valid_loader, criterion, device):
     loss_meter = AverageMeter()
 
     with torch.no_grad():
+        total_samples = 0
+        correct_predictions = 0
         for step, (imgs, gt_label) in enumerate(tqdm(valid_loader)):
             imgs = imgs.cuda()
             gt_label = gt_label.unsqueeze(1)
             gt_label = gt_label.to(device)
             valid_predict = model(imgs)
             valid_predict = valid_predict.float()
+            
+            # Đếm số lượng mẫu và dự đoán đúng
+            total_samples += imgs.size(0)
+            correct_predictions += torch.sum(torch.abs(valid_predict - gt_label) < 10000.0).item()
+            
             valid_loss = criterion(valid_predict, gt_label)
             loss_meter.update(valid_loss)
-
+        
+        accuracy_percentage = (correct_predictions / total_samples) * 100
+        print(f'Accuracy: {accuracy_percentage:.2f}%')
     valid_loss = loss_meter.avg
     return valid_loss
 
