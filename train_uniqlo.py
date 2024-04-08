@@ -19,12 +19,12 @@ def main(args):
 
     train_tsfm, valid_tsfm = get_transform(args)
 
-    train_set = UniqloDataset(csv_file='datasets/image_data.csv', 
-                        root_dir='datasets/datasets/imagesss', 
+    train_set = UniqloDataset(csv_file='datasets/image_train.csv',
+                              root_dir='datasets/images', 
                         transform=train_tsfm)
-    #Them csv valid vao day
+    
     valid_set = UniqloDataset(csv_file='datasets/image_valid.csv', 
-                        root_dir='datasets/datasets/imagesss', 
+                              root_dir='datasets/images',
                         transform=valid_tsfm)
     
     train_loader = DataLoader(
@@ -51,8 +51,6 @@ def main(args):
         checkpoint = torch.load(model_path, map_location=torch.device(device))
         model.load_state_dict(checkpoint['state_dict'])
     
-    # Initialize Weights & Biases
-    wandb.init(project="Uniqlo price prediction", config=args)
     
     # save checkpoint
     exp_dir = args.checkpoint
@@ -65,6 +63,9 @@ def main(args):
     optimizer = torch.optim.Adam(param_groups, weight_decay=args.weight_decay)
     lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=4)
 
+    # Initialize Weights & Biases
+    if args.log:
+        wandb.init(project="Uniqlo price prediction", name = f'Uniqlo_{model.backbone.__class__.__name__}_lr_{args.lr_ft}_{args.lr_new}_batch_size_{args.batchsize}')
 
     #training
     for i in range(args.train_epoch):
@@ -77,21 +78,22 @@ def main(args):
             device=device,
         )
 
-        valid_loss = valid_trainer(
+        valid = valid_trainer(
             model=model,
             valid_loader=valid_loader,
             criterion=criterion,
             device=device,
         )
 
-        lr_scheduler.step(metrics=valid_loss[0])
+        lr_scheduler.step(metrics=valid[0])
         
         #log
-        wandb.log({
-        "Epoch": i + 1,
-        "Train Loss": train_loss,  # Assuming train_loss is already averaged over the epoch
-        "Validation Loss": valid_loss[0]  # Assuming valid_loss is a tuple with the first element being the average loss over the validation set
-        })
+        if args.log:
+            wandb.log({
+            "Train Loss": train_loss, 
+            "Validation Loss": valid[0], 
+            "Validation Accuracy": valid[1],
+            })
 
         # save checkpoint
         if (i + 1) % 50 == 0:

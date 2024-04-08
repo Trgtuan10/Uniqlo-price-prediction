@@ -25,6 +25,7 @@ def argument_parser():
     parser.add_argument('--use_pretrain', default=False, type=bool)
     parser.add_argument('--pretrain_model', default="path_to_model.pt", type=str)
     parser.add_argument('--checkpoint', default="./exp", type=str)
+    parser.add_argument('--log', type=bool, default=False)
     return parser
 
 
@@ -113,7 +114,7 @@ def valid_trainer(model, valid_loader, criterion, device):
         accuracy_percentage = (correct_predictions / total_samples) * 100
         print(f'Accuracy: {accuracy_percentage:.2f}%')
     valid_loss = loss_meter.avg
-    return valid_loss
+    return valid_loss, accuracy_percentage
 
 def time_str(fmt=None):
     if fmt is None:

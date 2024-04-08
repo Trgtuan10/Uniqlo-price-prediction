@@ -11,11 +11,12 @@ class UniqloDataset(Dataset):
         self.root_dir = root_dir
         self.transform = transform
         
+        
     def __len__(self):
         return len(self.annotations)
     
     def __getitem__(self, index):
-        img_path = self.annotations.iloc[index, 0]
+        img_path = os.path.join(self.root_dir, str(self.annotations.iloc[index, 0])+'.jpg')
         image = Image.open(img_path).convert('RGB')
         y_label = torch.tensor(int(self.annotations.iloc[index, 1]))
         

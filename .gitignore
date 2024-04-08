@@ -2,3 +2,5 @@
 .env/
 workflow.ipynb
 wandb/
+datasets/back_up/
+*.pt
