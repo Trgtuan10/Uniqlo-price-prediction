@@ -61,6 +61,9 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
 
     lr0 = optimizer.param_groups[0]['lr']
     lr1 = optimizer.param_groups[1]['lr']
+    
+    acc = 0
+    total_samples = 0
     for step, (imgs, gt_label) in enumerate(train_loader):
         gt_label = gt_label.unsqueeze(1)
         batch_time = time.time()
@@ -68,8 +71,13 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
         imgs, gt_label = imgs.to(device), gt_label.to(device)
         train_predict = model(imgs)
         gt_label = gt_label.float()
+        
+        # count accuracy
+        acc += torch.sum(torch.abs(train_predict - gt_label) < 0.5).item()
+        total_samples += imgs.size(0)
+        
+        #loss
         train_loss = criterion(train_predict, gt_label)
-
         train_loss.backward()
         clip_grad_norm_(model.parameters(), max_norm=10.0)
         optimizer.step()
@@ -77,16 +85,16 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
 
         loss_meter.update(train_loss)
 
-
         log_interval = 20
         if (step + 1) % log_interval == 0 or (step + 1) % len(train_loader) == 0:
             print(f'{time_str()}, Step {step}/{batch_num} in Ep {epoch}, {time.time() - batch_time:.2f}s ',
                   f'train_loss:{loss_meter.val:.4f}')
 
-
+    acc = (acc / total_samples) * 100
+    
     print(f'Epoch {epoch}, LR0 {lr0}, LR1 {lr1}, Train_Time {time.time() - epoch_time:.2f}s, Loss: {loss_meter.avg:.4f}')
 
-    return train_loss
+    return train_loss, acc
 
 
 # @torch.no_grad()
@@ -98,7 +106,7 @@ def valid_trainer(model, valid_loader, criterion, device):
         total_samples = 0
         correct_predictions = 0
         for step, (imgs, gt_label) in enumerate(tqdm(valid_loader)):
-            imgs = imgs.cuda()
+            imgs = imgs.to(device)
             gt_label = gt_label.unsqueeze(1)
             gt_label = gt_label.to(device)
             valid_predict = model(imgs)
@@ -106,7 +114,7 @@ def valid_trainer(model, valid_loader, criterion, device):
             
             # Đếm số lượng mẫu và dự đoán đúng
             total_samples += imgs.size(0)
-            correct_predictions += torch.sum(torch.abs(valid_predict - gt_label) < 10000.0).item()
+            correct_predictions += torch.sum(torch.abs(valid_predict - gt_label) < 0.5).item()
             
             valid_loss = criterion(valid_predict, gt_label)
             loss_meter.update(valid_loss)

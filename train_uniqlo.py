@@ -24,7 +24,7 @@ def main(args):
     augmented_datasets = []
     for _ in range(num_augmented_copies):
         augmented_datasets.append(UniqloDataset(csv_file='datasets/image_data.csv', 
-                                                root_dir='datasets/datasets/imagesss', 
+                                                root_dir='datasets/images', 
                                                 transform=train_tsfm))
 
 
@@ -40,6 +40,8 @@ def main(args):
         shuffle=True,
         num_workers=args.workers,
     )
+    
+    # print(f'train set: {len(train_set)} samples')
 
     valid_loader = DataLoader(
         dataset=valid_set,
@@ -47,6 +49,8 @@ def main(args):
         shuffle=False,
         num_workers=args.workers,
     )
+    
+    # print(f'valid set: {len(valid_set)} samples')
     #model
     backbone = resnet18()
     model = Uniqlo(backbone)
@@ -77,7 +81,7 @@ def main(args):
     #training
     for i in range(args.train_epoch):
         print(f'start epoch :  {i+1}')
-        train_loss = batch_trainer(
+        train = batch_trainer(
             epoch=i,
             model=model,
             train_loader=train_loader,
@@ -98,7 +102,8 @@ def main(args):
         #log
         if args.log:
             wandb.log({
-            "Train Loss": train_loss, 
+            "Train Loss": train[0], 
+            "Train Accuracy": train[0],
             "Validation Loss": valid[0], 
             "Validation Accuracy": valid[1],
             })
