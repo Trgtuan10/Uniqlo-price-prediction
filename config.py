@@ -104,7 +104,7 @@ def valid_trainer(model, valid_loader, criterion, device):
             loss_meter.update(valid_loss)
 
     valid_loss = loss_meter.avg
-    return valid_loss,
+    return valid_loss
 
 def time_str(fmt=None):
     if fmt is None:
