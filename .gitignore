@@ -3,4 +3,6 @@
 workflow.ipynb
 wandb/
 datasets/back_up/
-*.pt
+v1.pt
+last.pt
+predict_clothes.pt

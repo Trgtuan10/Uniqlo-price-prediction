@@ -19,10 +19,10 @@ def predict_price(image):
     backbone = resnet18()
     model = Uniqlo(backbone)
 
-    model_path = 'v1.pt'  # Path to the trained model
+    model_path = 'model_state_dict.pt'  # Path to the trained model
     checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
-
-    model.load_state_dict(checkpoint['state_dict'])
+    
+    model.load_state_dict(checkpoint)
     
     model.eval()
     with torch.no_grad():
@@ -31,7 +31,7 @@ def predict_price(image):
 
 # Streamlit App
 def main():
-    st.title("Image Price Predictor")
+    st.title("Uniqlo Price Predictor")
     st.write("Upload an image and we'll predict its price!")
 
     # File uploader
@@ -49,7 +49,8 @@ def main():
         if st.button('Predict Price'):
             # Predict price
             price_prediction = predict_price(processed_image)
-            st.write(f"Predicted Price: {price_prediction:.2f}VND")
+            st.write(f"Predicted Price Range: {int(price_prediction - 50000) } VND - {int(price_prediction + 50000)} VND")
+
 
 # Run the app
 if __name__ == "__main__":
