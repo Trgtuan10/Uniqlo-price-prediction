@@ -69,6 +69,7 @@ def main(args):
 
     #training
     for i in range(args.train_epoch):
+        print(f'start epoch :  {i+1}')
         train_loss = batch_trainer(
             epoch=i,
             model=model,
@@ -94,6 +95,8 @@ def main(args):
             "Validation Loss": valid[0], 
             "Validation Accuracy": valid[1],
             })
+
+        print("-----------------------------------------------------------------------------------------------------------")
 
         # save checkpoint
         if (i + 1) % 50 == 0:
