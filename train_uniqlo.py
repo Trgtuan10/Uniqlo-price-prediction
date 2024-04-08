@@ -68,6 +68,7 @@ def main(args):
 
     #training
     for i in range(args.train_epoch):
+        print(f'start epoch :  {i+1}')
         train_loss = batch_trainer(
             epoch=i,
             model=model,
@@ -92,6 +93,8 @@ def main(args):
         "Train Loss": train_loss,  # Assuming train_loss is already averaged over the epoch
         "Validation Loss": valid_loss[0]  # Assuming valid_loss is a tuple with the first element being the average loss over the validation set
         })
+
+        print("-----------------------------------------------------------------------------------------------------------")
 
         # save checkpoint
         if (i + 1) % 50 == 0:
