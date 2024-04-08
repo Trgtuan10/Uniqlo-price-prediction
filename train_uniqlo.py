@@ -10,7 +10,7 @@ from datasets.UniqloDataset import UniqloDataset, get_transform
 import torchvision.transforms as T
 from resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
 from Uniqlo import *
-
+from torch.utils.data import ConcatDataset
 import wandb
 
 
@@ -19,10 +19,17 @@ def main(args):
 
     train_tsfm, valid_tsfm = get_transform(args)
 
-    train_set = UniqloDataset(csv_file='datasets/image_train.csv',
-                              root_dir='datasets/images', 
-                        transform=train_tsfm)
-    
+    num_augmented_copies = 5
+
+    augmented_datasets = []
+    for _ in range(num_augmented_copies):
+        augmented_datasets.append(UniqloDataset(csv_file='datasets/image_data.csv', 
+                                                root_dir='datasets/datasets/imagesss', 
+                                                transform=train_tsfm))
+
+
+    train_set = ConcatDataset(augmented_datasets)
+
     valid_set = UniqloDataset(csv_file='datasets/image_valid.csv', 
                               root_dir='datasets/images',
                         transform=valid_tsfm)

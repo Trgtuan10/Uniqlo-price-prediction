@@ -31,11 +31,13 @@ def get_transform(args):
     width = args.width
     train_transform = T.Compose([
         T.Resize((height, width)),
-        T.Pad(10),
-        T.RandomCrop((height, width)),
-        T.RandomHorizontalFlip(),
-        T.ToTensor(),
-    ])
+        T.RandomHorizontalFlip(),  
+        T.RandomVerticalFlip(),    
+        T.RandomRotation(degrees=30),  
+        T.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),  
+        T.RandomResizedCrop(size=(height, width), scale=(0.8, 1.0)),
+        T.ToTensor(),  # Chuyển ảnh sang tensor
+])
 
     valid_transform = T.Compose([
         T.Resize((height, width)),
