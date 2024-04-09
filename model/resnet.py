@@ -329,8 +329,8 @@ def resnext101_32x8d(pretrained=False, progress=True, **kwargs):
 if __name__ == '__main__':
     # print(resnet50())
     model = resnet18()
-    x = torch.rand((1, 3, 512, 256))
+    x = torch.rand((1, 3, 256, 256))
     y= model(x)
-    print(y[0])
+    print(y.shape)
 
     # print('receptive_field_dict')

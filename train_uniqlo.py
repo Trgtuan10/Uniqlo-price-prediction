@@ -9,7 +9,7 @@ from config import argument_parser, batch_trainer, valid_trainer
 from datasets.UniqloDataset import UniqloDataset, get_transform
 import torchvision.transforms as T
 from model.resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
-from model.Uniqlo import *
+from model.price_model import *
 from torch.utils.data import ConcatDataset
 import wandb
 
@@ -23,16 +23,18 @@ def main(args):
 
     augmented_datasets = []
     for _ in range(num_augmented_copies):
-        augmented_datasets.append(UniqloDataset(csv_file='datasets/image_data.csv', 
+        augmented_datasets.append(UniqloDataset(csv_file='datasets/csv_for_price/image_data.csv', 
                                                 root_dir='datasets/images', 
+                                                label_column='Price',
                                                 transform=train_tsfm))
 
 
     train_set = ConcatDataset(augmented_datasets)
 
-    valid_set = UniqloDataset(csv_file='datasets/image_valid.csv', 
+    valid_set = UniqloDataset(csv_file='datasets/csv_for_price/image_valid.csv', 
                               root_dir='datasets/images',
-                        transform=valid_tsfm)
+                              label_column='Price',
+                              transform=valid_tsfm)
     
     train_loader = DataLoader(
         dataset=train_set,

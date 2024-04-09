@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import torchvision.transforms as T
 from model.resnet import resnet18
-from model.Uniqlo import Uniqlo
+from model.price_model import Uniqlo
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):

@@ -57,44 +57,48 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
     model.train()
     epoch_time = time.time()
     loss_meter = AverageMeter()
+    acc_meter = AverageMeter()
     batch_num = len(train_loader)
 
-    lr0 = optimizer.param_groups[0]['lr']
-    lr1 = optimizer.param_groups[1]['lr']
+    lr = optimizer.param_groups[0]['lr']
     
-    acc = 0
-    total_samples = 0
     for step, (imgs, gt_label) in enumerate(train_loader):
-        gt_label = gt_label.unsqueeze(1)
         batch_time = time.time()
-        # imgs to imgs to devie
+        # Move data to device
         imgs, gt_label = imgs.to(device), gt_label.to(device)
+        
+        # Forward pass
         train_predict = model(imgs)
-        gt_label = gt_label.float()
         
-        # count accuracy
-        acc += torch.sum(torch.abs(train_predict - gt_label) < 0.5).item()
-        total_samples += imgs.size(0)
+        # Calculate accuracy
+        _, predicted = torch.max(train_predict, 1)
+        correct = predicted.eq(gt_label).sum().item()
+        acc_meter.update(correct / imgs.size(0))
         
-        #loss
+        print(f'predicted: {predicted}')
+        print(f'gt_label: {gt_label}')
+        print(f'correct: {correct}')
+        print(f'acc_meter: {acc_meter.avg}')
+        
+        # Calculate loss
         train_loss = criterion(train_predict, gt_label)
+        
+        # Backward pass
+        optimizer.zero_grad()
         train_loss.backward()
         clip_grad_norm_(model.parameters(), max_norm=10.0)
         optimizer.step()
-        optimizer.zero_grad()
 
-        loss_meter.update(train_loss)
+        loss_meter.update(train_loss.item(), imgs.size(0))
 
         log_interval = 20
         if (step + 1) % log_interval == 0 or (step + 1) % len(train_loader) == 0:
             print(f'{time_str()}, Step {step}/{batch_num} in Ep {epoch}, {time.time() - batch_time:.2f}s ',
                   f'train_loss:{loss_meter.val:.4f}')
 
-    acc = (acc / total_samples) * 100
-    
-    print(f'Epoch {epoch}, LR0 {lr0}, LR1 {lr1}, Train_Time {time.time() - epoch_time:.2f}s, Loss: {loss_meter.avg:.4f}')
+    print(f'Epoch {epoch}, LR {lr}, Train_Time {time.time() - epoch_time:.2f}s, Loss: {loss_meter.avg:.4f}, Accuracy: {acc_meter.avg:.2%}')
 
-    return train_loss, acc
+    return loss_meter.avg, acc_meter.avg
 
 
 # @torch.no_grad()
@@ -107,17 +111,18 @@ def valid_trainer(model, valid_loader, criterion, device):
         correct_predictions = 0
         for step, (imgs, gt_label) in enumerate(tqdm(valid_loader)):
             imgs = imgs.to(device)
-            gt_label = gt_label.unsqueeze(1)
             gt_label = gt_label.to(device)
             valid_predict = model(imgs)
-            valid_predict = valid_predict.float()
             
-            # Đếm số lượng mẫu và dự đoán đúng
+            # Calculate number of correct predictions
+            _, predicted = torch.max(valid_predict, 1)
+            correct_predictions += predicted.eq(gt_label).sum().item()
+            
+            # Count total samples
             total_samples += imgs.size(0)
-            correct_predictions += torch.sum(torch.abs(valid_predict - gt_label) < 0.5).item()
             
             valid_loss = criterion(valid_predict, gt_label)
-            loss_meter.update(valid_loss)
+            loss_meter.update(valid_loss.item(), imgs.size(0))
         
         accuracy_percentage = (correct_predictions / total_samples) * 100
         print(f'Accuracy: {accuracy_percentage:.2f}%')
