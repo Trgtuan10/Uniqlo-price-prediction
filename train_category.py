@@ -114,8 +114,9 @@ def main(args):
         print("-----------------------------------------------------------------------------------------------------------")
 
     # save checkpoint
-    save_checkpoint(model, last_checkpoint_path)
-    print("save checkpoint succesfully.")
+        if i % 50 == 0:
+            save_checkpoint(model, last_checkpoint_path)
+            print("save checkpoint succesfully.")
 
 
 def save_checkpoint(model, filepath):
@@ -124,6 +125,11 @@ def save_checkpoint(model, filepath):
     }
     if not os.path.exists(filepath):
         torch.save(checkpoint, filepath) 
+    else:
+        #replace
+        os.remove(filepath)
+        torch.save(checkpoint, filepath)
+        
 
 if __name__ == '__main__':
     parser = argument_parser()
