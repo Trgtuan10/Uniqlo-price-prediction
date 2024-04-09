@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-from resnet import resnet18, resnet34, resnet50, resnet152
+# from resnet import resnet18, resnet34, resnet50, resnet152
 
 
 # input_feature = 1408 # effnet
@@ -31,7 +31,7 @@ class Uniqlo(nn.Module):
         return x
 if __name__ == '__main__':
     # print(resnet50())
-    model = Uniqlo(resnet18())
+    model = Uniqlo()
     x = torch.rand((1, 3, 512, 256))
     y= model(x)
     print(y[0])

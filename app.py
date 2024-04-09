@@ -1,10 +1,12 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
+import pandas as pd
 import torch
 import torchvision.transforms as T
 from model.resnet import resnet18
 from model.price_model import Uniqlo
+from model.category_model import Uniql_category_model
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):
@@ -19,7 +21,7 @@ def predict_price(image):
     backbone = resnet18()
     model = Uniqlo(backbone)
 
-    model_path = 'model_state_dict.pt'  # Path to the trained model
+    model_path = 'checkpoint/model_state_dict.pt'  # Path to the trained model
     checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
     
     model.load_state_dict(checkpoint)
@@ -28,6 +30,41 @@ def predict_price(image):
     with torch.no_grad():
         prediction = model(image)
         return prediction.item()
+    
+def get_category_from_index(index, csv_file):
+    # Load the CSV file
+    df = pd.read_csv(csv_file)
+    
+    # Mapping sub-category to index
+    sub_category_mapping = {}
+    for _, row in df.iterrows():
+        sub_category = row['sub-category']
+        idx = row['index']
+        sub_category_mapping[idx] = sub_category
+    
+    # Retrieve category from index
+    if index in sub_category_mapping:
+        return sub_category_mapping[index]
+    else:
+        return None
+    
+    
+def predict_category(image):
+    backbone = resnet18()
+    model = Uniql_category_model(backbone)
+
+    model_path = 'checkpoint/cate_model_lr_0.01_0.1.pt'  # Path to the trained model
+    checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
+    
+    model.load_state_dict(checkpoint['state_dict'])
+    
+    model.eval()
+    with torch.no_grad():
+        prediction = model(image)
+        # max predict
+        _, predicted = torch.max(prediction, 1)
+        return get_category_from_index(predicted.item(), 'datasets/csv_for_category/data_cate.csv')
+        
 
 # Streamlit App
 def main():
@@ -46,10 +83,14 @@ def main():
         processed_image = preprocess_image(image)
 
         # Button to trigger prediction
-        if st.button('Predict Price'):
+        if st.button('Predict'):
             # Predict price
             price_prediction = predict_price(processed_image)
-            st.write(f"Predicted Price Range: {int(price_prediction)%1000}  VND")
+            st.write(f"Predicted Price:\t\t{int(price_prediction / 1000) * 1000} VND")
+
+            category_prediction = predict_category(processed_image)
+            st.write(f"Predicted Category:\t\t{category_prediction}")
+
 
 
 # Run the app
