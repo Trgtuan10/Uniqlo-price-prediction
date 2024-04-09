@@ -75,10 +75,10 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
         correct = predicted.eq(gt_label).sum().item()
         acc_meter.update(correct / imgs.size(0))
         
-        print(f'predicted: {predicted}')
-        print(f'gt_label: {gt_label}')
-        print(f'correct: {correct}')
-        print(f'acc_meter: {acc_meter.avg}')
+        # print(f'predicted: {predicted}')
+        # print(f'gt_label: {gt_label}')
+        # print(f'correct: {correct}')
+        # print(f'acc_meter: {acc_meter.avg}')
         
         # Calculate loss
         train_loss = criterion(train_predict, gt_label)

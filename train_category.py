@@ -23,17 +23,17 @@ def main(args):
 
     augmented_datasets = []
     for _ in range(num_augmented_copies):
-        augmented_datasets.append(UniqloDataset(csv_file='datasets/csv_for_price/image_data.csv', 
+        augmented_datasets.append(UniqloDataset(csv_file='datasets/csv_for_category/data_cate.csv', 
                                                 root_dir='datasets/images', 
-                                                label_column='Price',
+                                                label_column='index',
                                                 transform=train_tsfm))
 
 
     train_set = ConcatDataset(augmented_datasets)
 
-    valid_set = UniqloDataset(csv_file='datasets/csv_for_price/image_valid.csv', 
+    valid_set = UniqloDataset(csv_file='datasets/csv_for_category/data_valid.csv', 
                               root_dir='datasets/images',
-                              label_column='Price',
+                              label_column='index',
                               transform=valid_tsfm)
     
     train_loader = DataLoader(
@@ -68,8 +68,7 @@ def main(args):
     # save checkpoint
     exp_dir = args.checkpoint
     #name with date
-    time_train = time.strftime("%Y%m%d-%H%M%S")
-    last_checkpoint_filename = 'cate_model_' + time_train + '.pt'
+    last_checkpoint_filename = f'cate_model_lr_{args.lr_ft}_{args.lr_new}.pt'
     last_checkpoint_path = os.path.join(exp_dir, last_checkpoint_filename)
 
     criterion = nn.CrossEntropyLoss()
@@ -115,7 +114,7 @@ def main(args):
         print("-----------------------------------------------------------------------------------------------------------")
 
     # save checkpoint
-    save_checkpoint(model, optimizer, i + 1, last_checkpoint_path)
+    save_checkpoint(model, last_checkpoint_path)
     print("save checkpoint succesfully.")
 
 
