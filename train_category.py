@@ -106,7 +106,7 @@ def main(args):
         if args.log:
             wandb.log({
             "Train Category Loss": train[0], 
-            "Train Category Accuracy": train[0],
+            "Train Category Accuracy": train[1],
             "Validation Category Loss": valid[0], 
             "Validation Category Accuracy": valid[1],
             })
