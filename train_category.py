@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from config import argument_parser, batch_trainer, valid_trainer
-from datasets.UniqloDataset import UniqloDataset, get_transform
+from datasets.UniqloDataset import UniqloDataset, get_transform,UniqloDatasetCategory
 import torchvision.transforms as T
 from model.resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
 from model.category_model import *
@@ -23,7 +23,7 @@ def main(args):
 
     augmented_datasets = []
     for _ in range(num_augmented_copies):
-        augmented_datasets.append(UniqloDataset(csv_file='datasets/csv_for_category/data_cate.csv', 
+        augmented_datasets.append(UniqloDatasetCategory(csv_file='datasets/csv_for_category/data_cate.csv', 
                                                 root_dir='datasets/images', 
                                                 label_column='index',
                                                 transform=train_tsfm))
@@ -31,7 +31,7 @@ def main(args):
 
     train_set = ConcatDataset(augmented_datasets)
 
-    valid_set = UniqloDataset(csv_file='datasets/csv_for_category/data_valid.csv', 
+    valid_set = UniqloDatasetCategory(csv_file='datasets/csv_for_category/data_valid.csv', 
                               root_dir='datasets/images',
                               label_column='index',
                               transform=valid_tsfm)
