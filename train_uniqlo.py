@@ -8,8 +8,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from config import argument_parser, batch_trainer, valid_trainer
 from datasets.UniqloDataset import UniqloDataset, get_transform
 import torchvision.transforms as T
-from resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
-from Uniqlo import *
+from model.resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
+from model.Uniqlo import *
 from torch.utils.data import ConcatDataset
 import wandb
 

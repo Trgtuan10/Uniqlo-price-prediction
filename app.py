@@ -3,8 +3,8 @@ from PIL import Image
 import numpy as np
 import torch
 import torchvision.transforms as T
-from resnet import resnet18
-from Uniqlo import Uniqlo
+from model.resnet import resnet18
+from model.Uniqlo import Uniqlo
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):
@@ -49,7 +49,7 @@ def main():
         if st.button('Predict Price'):
             # Predict price
             price_prediction = predict_price(processed_image)
-            st.write(f"Predicted Price Range: {int(price_prediction - 50000) } VND - {int(price_prediction + 50000)} VND")
+            st.write(f"Predicted Price Range: {int(price_prediction)%1000}  VND")
 
 
 # Run the app

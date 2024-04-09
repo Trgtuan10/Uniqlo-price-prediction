@@ -1,6 +1,6 @@
 *.jpg
 .env/
-workflow.ipynb
+# workflow.ipynb
 wandb/
 datasets/back_up/
 v1.pt
