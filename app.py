@@ -22,7 +22,7 @@ def predict_price(image):
     model = Uniqlo(backbone)
 
     model_path = 'checkpoint/model_state_dict.pt'  # Path to the trained model
-    checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
+    checkpoint = torch.load(model_path, map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     
     model.load_state_dict(checkpoint)
     
@@ -54,7 +54,7 @@ def predict_category(image):
     model = Uniql_category_model(backbone)
 
     model_path = 'checkpoint/cate_model_lr_0.01_0.1.pt'  # Path to the trained model
-    checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
+    checkpoint = torch.load(model_path, map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     
     model.load_state_dict(checkpoint['state_dict'])
     
