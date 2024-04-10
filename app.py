@@ -86,9 +86,9 @@ def main():
         if st.button('Predict'):
             # Predict price
             price_prediction = predict_price(processed_image)
-            st.write(f"Predicted Price:\t\t{int(price_prediction / 1000) * 1000} VND")
-
             category_prediction = predict_category(processed_image)
+            
+            st.write(f"Predicted Price:\t\t{int(price_prediction / 1000) * 1000} VND")
             st.write(f"Predicted Category:\t\t{category_prediction}")
 
 

@@ -328,7 +328,7 @@ def resnext101_32x8d(pretrained=False, progress=True, **kwargs):
 
 if __name__ == '__main__':
     # print(resnet50())
-    model = resnet18()
+    model = resnet34()
     x = torch.rand((1, 3, 256, 256))
     y= model(x)
     print(y.shape)
