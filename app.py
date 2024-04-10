@@ -4,12 +4,15 @@ import numpy as np
 import pandas as pd
 import torch
 import torchvision.transforms as T
-from model.resnet import resnet18
+from model.resnet import resnet18, resnet34
 from model.price_model import Uniqlo
 from model.category_model import Uniql_category_model
+from model.name_model import Uniqlo_name_model
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):
+    #convert image to RGB
+    image = image.convert('RGB')
     transform = T.Compose([
         T.Resize((224, 224)),  # Resize image to match model input size
         T.ToTensor()  # Convert PIL image to PyTorch tensor
@@ -48,6 +51,22 @@ def get_category_from_index(index, csv_file):
     else:
         return None
     
+def get_name_from_index(index, csv_file):
+    # Load the CSV file
+    df = pd.read_csv(csv_file)
+    
+    # Mapping sub-category to index
+    name_mapping = {}
+    for _, row in df.iterrows():
+        sub_category = row['Title']
+        idx = row['index']
+        name_mapping[idx] = sub_category
+    
+    # Retrieve category from index
+    if index in name_mapping:
+        return name_mapping[index]
+    else:
+        return None
     
 def predict_category(image):
     backbone = resnet18()
@@ -65,6 +84,22 @@ def predict_category(image):
         _, predicted = torch.max(prediction, 1)
         return get_category_from_index(predicted.item(), 'datasets/csv_for_category/data_cate.csv')
         
+def predict_name(image):
+    backbone = resnet34()
+    model = Uniqlo_name_model(backbone)
+
+    model_path = 'checkpoint/name_model.pt'  # Path to the trained model
+    checkpoint = torch.load(model_path, map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+    
+    model.load_state_dict(checkpoint['state_dict'])
+    
+    model.eval()
+    with torch.no_grad():
+        prediction = model(image)
+        # max predict
+        _, predicted = torch.max(prediction, 1)
+        return get_name_from_index(predicted.item(), 'datasets/csv_for_name/data_name.csv')
+
 
 # Streamlit App
 def main():
@@ -87,9 +122,11 @@ def main():
             # Predict price
             price_prediction = predict_price(processed_image)
             category_prediction = predict_category(processed_image)
+            name_prediction = predict_name(processed_image)
             
-            st.write(f"Predicted Price:\t\t{int(price_prediction / 1000) * 1000} VND")
-            st.write(f"Predicted Category:\t\t{category_prediction}")
+            st.write(f"Predicted Price:    {round(price_prediction / 1000) * 1000:,} VND")
+            st.write(f"Predicted Category:    {category_prediction}")
+            st.write(f"Predicted Name:    {name_prediction}")
 
 
 
