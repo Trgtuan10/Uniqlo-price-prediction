@@ -139,8 +139,8 @@ def predict_cls_price(image):
 
 # Streamlit App
 def main():
-    st.title("Uniqlo Price Predictor")
-    st.write("Upload an image and we'll predict its price!")
+    st.title("Uniqlo Information Predictor")
+    st.write("Upload an image and we'll predict its price, category and title!")
 
     # File uploader
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
