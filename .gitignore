@@ -6,3 +6,5 @@ datasets/back_up/
 v1.pt
 last.pt
 predict_clothes.pt
+val.py
+*.pyc
