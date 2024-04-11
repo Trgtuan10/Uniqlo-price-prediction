@@ -74,7 +74,10 @@ def batch_trainer(epoch, model, train_loader, criterion, optimizer, device):
         _, predicted = torch.max(train_predict, 1)
         correct = predicted.eq(gt_label).sum().item()
         acc_meter.update(correct / imgs.size(0))
-    
+
+        # print("train ", train_predict.shape)
+        # print("label ", gt_label.shape)
+        # print(correct)
         
         # Calculate loss
         train_loss = criterion(train_predict, gt_label)

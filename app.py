@@ -128,7 +128,7 @@ def predict_cls_price(image):
     model_path = 'checkpoint/price_cls_overfit.pt'  # Path to the trained model
     checkpoint = torch.load(model_path, map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     
-    model.load_state_dict(checkpoint)
+    model.load_state_dict(checkpoint['state_dict'])
     
     model.eval()
     with torch.no_grad():
@@ -164,7 +164,7 @@ def main():
             
             # st.write(f"Predicted Price:    {round(price_prediction / 1000) * 1000:,} VND") #regression
             
-            st.write(f"Predicted Price:  {price_prediction * 100000:,} VND")    #cls
+            st.write(f"Predicted Price:  {(price_prediction * 100000):,} VND")    #cls
             st.write(f"Predicted Category:    {category_prediction}")
             st.write(f"Predicted Name:    {name_prediction}")
 

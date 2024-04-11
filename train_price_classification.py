@@ -9,7 +9,7 @@ from config import argument_parser, batch_trainer, valid_trainer
 from datasets.UniqloDataset import UniqloDataset, get_transform
 import torchvision.transforms as T
 from model.resnet import resnet50, resnet101, resnext50_32x4d,resnet152,resnet18,resnet34
-from model.name_model import *
+from model.price_model_classification import *
 from torch.utils.data import ConcatDataset
 import wandb
 
@@ -60,7 +60,7 @@ def main(args):
     # print(f'valid set: {len(valid_set)} samples')
     #model
     backbone = resnet34()
-    model = Uniqlo_name_model(backbone)
+    model = Uniqlo_price_cls_model(backbone)
 
     device = torch.device("cuda:" + args.device if torch.cuda.is_available() else "cpu")
     model.to(device)

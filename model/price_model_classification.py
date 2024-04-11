@@ -27,23 +27,19 @@ class Uniqlo_price_cls_model(nn.Module):
 
         self.backbone = backbone
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc1 = nn.Linear(input_feature, 20)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(20, 10)
+        self.fc1 = nn.Linear(input_feature, 10)
 
     def finetune_params(self):
         return self.backbone.parameters()
     
     def fresh_params(self):
-        return list(self.fc1.parameters(), self.fc2.parameters())
+        return list(self.fc1.parameters())
 
     def forward(self, x):
         x = self.backbone(x)
         x = self.avg_pool(x)
         x = x.view(x.size(0), -1)
         x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
         return x
 if __name__ == '__main__':
     # print(resnet50())
