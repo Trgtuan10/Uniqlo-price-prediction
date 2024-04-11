@@ -164,7 +164,7 @@ def main():
             
             # st.write(f"Predicted Price:    {round(price_prediction / 1000) * 1000:,} VND") #regression
             
-            st.write(f"Predicted Price:  {(price_prediction * 100000):,} VND")    #cls
+            st.write(f"Predicted Price:  {int(price_prediction * 100000):,} VND")    #cls
             st.write(f"Predicted Category:    {category_prediction}")
             st.write(f"Predicted Name:    {name_prediction}")
 
