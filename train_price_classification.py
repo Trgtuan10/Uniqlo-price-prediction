@@ -111,10 +111,10 @@ def main(args):
         #log
         if args.log:
             wandb.log({
-            "Train Name Loss": train[0], 
-            "Train Name Accuracy": train[1],
-            "Validation Name Loss": valid[0], 
-            "Validation Name Accuracy": valid[1],
+            "Train Price_cl Loss": train[0], 
+            "Train Price_cl Accuracy": train[1],
+            "Validation Price_cl Loss": valid[0], 
+            "Validation Price_cl Accuracy": valid[1],
             })
 
         print("-----------------------------------------------------------------------------------------------------------")

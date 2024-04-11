@@ -21,9 +21,9 @@ import torch.nn.functional as F
 input_feature = 512 # resnet18 or 34
 #input_feature = 3072 # nfnets
 
-class Uniqlo_name_model(nn.Module):
+class Uniqlo_price_cls_model(nn.Module):
     def __init__(self, backbone):
-        super(Uniqlo_name_model, self).__init__()
+        super(Uniqlo_price_cls_model, self).__init__()
 
         self.backbone = backbone
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
@@ -47,15 +47,10 @@ class Uniqlo_name_model(nn.Module):
         return x
 if __name__ == '__main__':
     # print(resnet50())
-    model = Uniqlo_name_model()
+    model = Uniqlo_price_cls_model()
     x = torch.rand((1, 3, 512, 256))
     y= model(x)
     print(y.shape)
         
-if __name__ == '__main__':
-    # print(resnet50())
-    model = Uniqlo_name_model()
-    x = torch.rand((1, 3, 512, 256))
-    y= model(x)
-    print(y.shape)
+
         
