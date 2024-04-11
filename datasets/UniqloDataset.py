@@ -20,7 +20,10 @@ class UniqloDataset(Dataset):
         image = Image.open(img_path).convert('RGB')
         
         # Trích xuất nhãn từ cột được chỉ định bằng tên
-        y_label = torch.tensor(int(self.annotations.loc[index, self.label_column]))
+        if self.label_column == 'Price':
+            y_label = torch.tensor(float(self.annotations.loc[index, self.label_column]))
+        else: 
+            y_label = torch.tensor(int(self.annotations.loc[index, self.label_column]))
         
         if self.transform:
             image = self.transform(image)
