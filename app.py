@@ -122,7 +122,7 @@ def predict_name(image):
 
 
 def predict_cls_price(image):
-    backbone = resnet18()
+    backbone = resnet34()
     model = Uniqlo_price_cls_model(backbone)
     
     model_path = 'checkpoint/price_cls_overfit.pt'  # Path to the trained model
