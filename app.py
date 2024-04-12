@@ -15,7 +15,7 @@ def preprocess_image(image):
     #convert image to RGB
     image = image.convert('RGB')
     transform = T.Compose([
-        T.Resize((224, 224)),  # Resize image to match model input size
+        T.Resize((256, 256)),  # Resize image to match model input size
         T.ToTensor()  # Convert PIL image to PyTorch tensor
     ])
     return transform(image).unsqueeze(0)  # Add batch dimension
