@@ -35,3 +35,6 @@ Train pretrain or resume
 ```
 python train_uniqlo.py --train_epoch 300 --batchsize 8 --device 0 --height 256 --width 256 --use_pretrain True --pretrain_model 'path/to/your/checkpoint.pt'
 ```
+
+## Test your clothes 
+My demo: [Uniqlo-information-prediction](https://mt-uniqlo.streamlit.app/)
