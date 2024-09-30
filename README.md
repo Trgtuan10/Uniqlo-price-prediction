@@ -2,7 +2,7 @@
 
 
 ## How to use
-Open cmd, cd to your directory and folow these codes: 
+Open your cmd, cd to your directory and folow these codes: 
 
 ```
 git clone https://github.com/Trgtuan10/Uniqlo-price-prediction.git
